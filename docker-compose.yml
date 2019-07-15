@@ -3,58 +3,68 @@ services:
   asd:
     image: nginx
     volumes:
-      - /home/alexandr/work/slon/html:/usr/share/nginx/html:ro
-      - ./asd.conf:/etc/nginx/nginx.conf:ro
+      - ${WWW_PATH}:/usr/share/nginx/html:ro
+      - ./nginx-conf/asd.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - php
     networks:
       work-net:
-        ipv4_address: 172.21.0.51
+        ipv4_address: 172.22.0.51
 
   'security.lm.local':
     image: nginx
     volumes:
-      - /home/alexandr/work/slon/html:/usr/share/nginx/html:ro
-      - ./security.conf:/etc/nginx/nginx.conf:ro
-    #ports:
-    #  - "80:80"
-    environment:
-      - NGINX_PORT=80
+      - ${WWW_PATH}:/usr/share/nginx/html:ro
+      - ./nginx-conf/security.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - php
     networks:
       work-net:
-        ipv4_address: 172.21.0.52
+        ipv4_address: 172.22.0.52
   ###########################################################################
   php:
     build: ./php-fpm
     volumes:
-      - /home/alexandr/work/slon/html:/usr/share/nginx/html
+      - ${WWW_PATH}:/usr/share/nginx/html
     environment:
-      XDEBUG_CONFIG: "remote_host=172.21.0.1 remote_enable=1"
-      PHP_IDE_CONFIG: "serverName=Docker"
+      XDEBUG_CONFIG: "remote_host=172.22.0.1 remote_enable=1"
+      PHP_IDE_CONFIG: "serverName=${XDEBUG_SERVER_NAME}"
     networks:
       work-net:
-        ipv4_address: 172.21.0.24
+        ipv4_address: 172.22.0.24
   db:
     image: postgres:11
     restart: always
     environment:
       POSTGRES_PASSWORD: example
     volumes:
-      - /home/alexandr/work/slon/pgdata:/var/lib/postgresql/data
+      - ${DB_DIR}:/var/lib/postgresql/data
     networks:
       work-net:
-        ipv4_address: 172.21.0.25
+        ipv4_address: 172.22.0.25
   adminer:
     image: adminer
     restart: always
     networks:
       work-net:
-        ipv4_address: 172.21.0.26
+        ipv4_address: 172.22.0.26
+  rabbit:
+    image: rabbitmq:3-management
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_VHOST: my_vhost
+    networks:
+      work-net:
+        ipv4_address: 172.22.0.27
+  redis:
+    image: redis
+    restart: always
+    networks:
+      work-net:
+        ipv4_address: 172.21.0.28
 networks:
   work-net:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.21.0.0/24
+        - subnet: 172.22.0.0/24
