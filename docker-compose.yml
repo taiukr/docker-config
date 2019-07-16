@@ -32,6 +32,7 @@ services:
     networks:
       work-net:
         ipv4_address: 172.22.0.24
+    working_dir: /usr/share/nginx/html
   db:
     image: postgres:11
     restart: always
@@ -61,7 +62,7 @@ services:
     restart: always
     networks:
       work-net:
-        ipv4_address: 172.21.0.28
+        ipv4_address: 172.22.0.28
 networks:
   work-net:
     driver: bridge
