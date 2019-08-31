@@ -6,5 +6,7 @@
 - DB_DIR - директория для БД, если конечной папки не будет docker сам ее создаст.
 
 _собрать проект:_ **docker-compose build**
+
 _запустить:_ **docker-compose up** или **docker-compose up -d** для демона
+
 _потушить:_ **docker-compose down**
