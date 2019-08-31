@@ -29,9 +29,8 @@ services:
     environment:
       XDEBUG_CONFIG: "remote_host=172.22.0.1 remote_enable=1"
       PHP_IDE_CONFIG: "serverName=${XDEBUG_SERVER_NAME}"
-    networks:
-      work-net:
-        ipv4_address: 172.22.0.24
+    network_mode: "host"
+
     working_dir: /usr/share/nginx/html
   db:
     image: postgres:11
@@ -64,6 +63,8 @@ services:
       work-net:
         ipv4_address: 172.22.0.28
 networks:
+  #docker_host:
+  #  : host
   work-net:
     driver: bridge
     ipam:
